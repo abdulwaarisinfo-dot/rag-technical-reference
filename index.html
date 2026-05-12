@@ -1,0 +1,949 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RAG Systems: Architecture, Workflow & Applications</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --ink: #0d0d0e;
+    --ink-2: #3a3a40;
+    --ink-3: #6b6b74;
+    --ink-4: #9a9aa3;
+    --rule: #e2e2e8;
+    --surface: #f8f8fb;
+    --surface-2: #ffffff;
+    --accent: #1a3a6b;
+    --accent-light: #e8edf7;
+    --accent-mid: #2d5fa8;
+    --green: #1a5c3a;
+    --green-light: #e6f3ec;
+    --amber: #6b3e0d;
+    --amber-light: #fdf2e4;
+    --red: #6b1a1a;
+    --red-light: #fce8e8;
+    --serif: 'DM Serif Display', Georgia, serif;
+    --sans: 'Instrument Sans', system-ui, sans-serif;
+    --mono: 'DM Mono', monospace;
+  }
+
+  html { font-size: 16px; }
+
+  body {
+    font-family: var(--sans);
+    background: var(--surface-2);
+    color: var(--ink);
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── COVER ── */
+  .cover {
+    background: var(--ink);
+    color: #fff;
+    padding: 80px 72px 72px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cover::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(255,255,255,0.035) 39px, rgba(255,255,255,0.035) 40px),
+      repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(255,255,255,0.035) 39px, rgba(255,255,255,0.035) 40px);
+    pointer-events: none;
+  }
+
+  .cover-label {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    color: rgba(255,255,255,0.4);
+    text-transform: uppercase;
+    margin-bottom: 40px;
+  }
+
+  .cover h1 {
+    font-family: var(--serif);
+    font-size: clamp(32px, 5vw, 52px);
+    line-height: 1.1;
+    font-weight: 400;
+    color: #fff;
+    max-width: 700px;
+    margin-bottom: 28px;
+  }
+
+  .cover h1 em {
+    font-style: italic;
+    color: rgba(255,255,255,0.55);
+  }
+
+  .cover-meta {
+    display: flex;
+    gap: 32px;
+    flex-wrap: wrap;
+    margin-top: 48px;
+    padding-top: 32px;
+    border-top: 0.5px solid rgba(255,255,255,0.15);
+  }
+
+  .cover-meta-item { font-size: 13px; color: rgba(255,255,255,0.5); }
+  .cover-meta-item strong { display: block; color: rgba(255,255,255,0.9); font-size: 14px; margin-bottom: 2px; }
+
+  /* ── TOC ── */
+  .toc-wrap {
+    background: var(--surface);
+    border-bottom: 1px solid var(--rule);
+    padding: 48px 72px;
+  }
+
+  .toc-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    color: var(--ink-4);
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+
+  .toc-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 6px 32px;
+  }
+
+  .toc-item {
+    display: flex;
+    gap: 10px;
+    font-size: 13.5px;
+    color: var(--ink-2);
+    text-decoration: none;
+    padding: 5px 0;
+    border-bottom: 0.5px solid transparent;
+    transition: color 0.15s;
+  }
+
+  .toc-item:hover { color: var(--accent-mid); }
+
+  .toc-num {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--ink-4);
+    min-width: 24px;
+    padding-top: 2px;
+  }
+
+  /* ── MAIN LAYOUT ── */
+  .content {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 72px 48px 96px;
+  }
+
+  /* ── SECTION ── */
+  .section { margin-bottom: 64px; }
+
+  .section-header {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    margin-bottom: 24px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .section-num {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--ink-4);
+    min-width: 28px;
+  }
+
+  .section-header h2 {
+    font-family: var(--serif);
+    font-size: 26px;
+    font-weight: 400;
+    color: var(--ink);
+    line-height: 1.2;
+  }
+
+  p { font-size: 15.5px; color: var(--ink-2); margin-bottom: 14px; }
+
+  /* ── COMPONENT CARDS ── */
+  .component-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 12px;
+    margin-top: 24px;
+  }
+
+  .component-card {
+    background: var(--surface);
+    border: 0.5px solid var(--rule);
+    border-radius: 10px;
+    padding: 18px 20px;
+  }
+
+  .component-card-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: var(--accent-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 12px;
+  }
+
+  .component-card-icon svg { width: 17px; height: 17px; stroke: var(--accent); fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+
+  .component-card h3 {
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 6px;
+    font-family: var(--sans);
+  }
+
+  .component-card p {
+    font-size: 13px;
+    color: var(--ink-3);
+    margin: 0;
+    line-height: 1.55;
+  }
+
+  /* ── PIPELINE ── */
+  .pipeline {
+    margin-top: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    border: 0.5px solid var(--rule);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .pipeline-step {
+    display: grid;
+    grid-template-columns: 48px 1fr;
+    gap: 0;
+    border-bottom: 0.5px solid var(--rule);
+    background: var(--surface-2);
+  }
+
+  .pipeline-step:last-child { border-bottom: none; }
+
+  .pipeline-step-num {
+    background: var(--surface);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--ink-4);
+    border-right: 0.5px solid var(--rule);
+    min-height: 72px;
+  }
+
+  .pipeline-step-body {
+    padding: 16px 20px;
+  }
+
+  .pipeline-step-body h4 {
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 3px;
+  }
+
+  .pipeline-step-body p {
+    font-size: 13px;
+    color: var(--ink-3);
+    margin: 0;
+  }
+
+  /* ── RAG TYPES ── */
+  .rag-types {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 24px;
+  }
+
+  .rag-type-card {
+    border: 0.5px solid var(--rule);
+    border-radius: 10px;
+    padding: 20px;
+    background: var(--surface-2);
+  }
+
+  .rag-type-badge {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    padding: 3px 9px;
+    border-radius: 4px;
+    margin-bottom: 10px;
+  }
+
+  .badge-naive { background: var(--surface); color: var(--ink-3); border: 0.5px solid var(--rule); }
+  .badge-advanced { background: var(--accent-light); color: var(--accent); }
+  .badge-modular { background: var(--green-light); color: var(--green); }
+  .badge-agentic { background: var(--amber-light); color: var(--amber); }
+
+  .rag-type-card h3 {
+    font-size: 14.5px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 7px;
+  }
+
+  .rag-type-card p {
+    font-size: 13px;
+    color: var(--ink-3);
+    margin: 0;
+    line-height: 1.55;
+  }
+
+  /* ── ADVANTAGES / LIMITATIONS ── */
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 24px;
+  }
+
+  .adv-item {
+    display: flex;
+    gap: 12px;
+    padding: 16px;
+    background: var(--green-light);
+    border: 0.5px solid rgba(26,92,58,0.15);
+    border-radius: 10px;
+    align-items: flex-start;
+  }
+
+  .lim-item {
+    display: flex;
+    gap: 12px;
+    padding: 16px;
+    background: var(--amber-light);
+    border: 0.5px solid rgba(107,62,13,0.15);
+    border-radius: 10px;
+    align-items: flex-start;
+  }
+
+  .adv-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--green);
+    flex-shrink: 0; margin-top: 7px;
+  }
+
+  .lim-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--amber);
+    flex-shrink: 0; margin-top: 7px;
+  }
+
+  .adv-item h4, .lim-item h4 {
+    font-size: 13.5px; font-weight: 600;
+    color: var(--ink); margin-bottom: 4px;
+  }
+
+  .adv-item p, .lim-item p {
+    font-size: 13px; color: var(--ink-3); margin: 0; line-height: 1.5;
+  }
+
+  /* ── APPLICATIONS ── */
+  .app-list {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .app-row {
+    display: grid;
+    grid-template-columns: 180px 1fr;
+    gap: 0;
+    border: 0.5px solid var(--rule);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .app-domain {
+    background: var(--surface);
+    padding: 14px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink-2);
+    border-right: 0.5px solid var(--rule);
+    display: flex;
+    align-items: center;
+  }
+
+  .app-desc {
+    padding: 14px 18px;
+    font-size: 13.5px;
+    color: var(--ink-3);
+    display: flex;
+    align-items: center;
+  }
+
+  /* ── TECH STACK ── */
+  .stack-section {
+    margin-top: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .stack-group-label {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: 0.1em;
+    color: var(--ink-4);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .stack-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .chip {
+    font-family: var(--mono);
+    font-size: 12.5px;
+    padding: 5px 12px;
+    border-radius: 6px;
+    background: var(--surface);
+    border: 0.5px solid var(--rule);
+    color: var(--ink-2);
+  }
+
+  .chip.accent { background: var(--accent-light); border-color: rgba(26,58,107,0.2); color: var(--accent); }
+
+  /* ── FUTURE ── */
+  .future-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-top: 24px;
+  }
+
+  .future-card {
+    border: 0.5px solid var(--rule);
+    border-radius: 10px;
+    padding: 20px;
+    background: var(--surface);
+  }
+
+  .future-tag {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .future-card h3 {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 8px;
+  }
+
+  .future-card p { font-size: 13px; color: var(--ink-3); margin: 0; line-height: 1.55; }
+
+  /* ── CALLOUT ── */
+  .callout {
+    margin: 28px 0;
+    padding: 20px 24px;
+    border-left: 3px solid var(--accent);
+    background: var(--accent-light);
+    border-radius: 0 8px 8px 0;
+  }
+
+  .callout p { font-size: 14.5px; color: var(--accent); margin: 0; line-height: 1.6; font-style: italic; }
+
+  /* ── CODE INLINE ── */
+  code {
+    font-family: var(--mono);
+    font-size: 13px;
+    background: var(--surface);
+    border: 0.5px solid var(--rule);
+    padding: 1px 6px;
+    border-radius: 4px;
+    color: var(--ink-2);
+  }
+
+  /* ── FOOTER ── */
+  .doc-footer {
+    background: var(--surface);
+    border-top: 1px solid var(--rule);
+    padding: 32px 72px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .doc-footer p { font-size: 12px; color: var(--ink-4); margin: 0; }
+
+  @media (max-width: 640px) {
+    .cover { padding: 48px 28px; }
+    .toc-wrap { padding: 36px 28px; }
+    .content { padding: 48px 24px 72px; }
+    .rag-types, .two-col, .future-grid { grid-template-columns: 1fr; }
+    .app-row { grid-template-columns: 1fr; }
+    .app-domain { border-right: none; border-bottom: 0.5px solid var(--rule); }
+    .doc-footer { padding: 24px 28px; flex-direction: column; gap: 8px; text-align: center; }
+    .cover-meta { gap: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- COVER -->
+<div class="cover">
+  <div class="cover-label">Technical Reference Document · AI Systems Engineering</div>
+  <h1>Retrieval-Augmented Generation <em>(RAG)</em> Systems<br>Architecture, Workflow &amp; Applications</h1>
+  <p style="color:rgba(255,255,255,0.55); font-size:15px; max-width:560px; margin-top:16px; line-height:1.65;">
+    A structured, in-depth reference for engineers, researchers, and AI product builders working with hybrid retrieval-generative architectures.
+  </p>
+  <div class="cover-meta">
+    <div class="cover-meta-item"><strong>Audience</strong>AI Engineers &amp; Researchers</div>
+    <div class="cover-meta-item"><strong>Level</strong>Advanced / Technical</div>
+    <div class="cover-meta-item"><strong>Format</strong>Technical Reference</div>
+    <div class="cover-meta-item"><strong>Covers</strong>Architecture · Workflow · Applications</div>
+  </div>
+</div>
+
+<!-- TABLE OF CONTENTS -->
+<div class="toc-wrap">
+  <div class="toc-label">Contents</div>
+  <div class="toc-grid">
+    <a href="#s1" class="toc-item"><span class="toc-num">01</span> Overview</a>
+    <a href="#s2" class="toc-item"><span class="toc-num">02</span> Core Architecture</a>
+    <a href="#s3" class="toc-item"><span class="toc-num">03</span> End-to-End Workflow</a>
+    <a href="#s4" class="toc-item"><span class="toc-num">04</span> Types of RAG Systems</a>
+    <a href="#s5" class="toc-item"><span class="toc-num">05</span> Key Advantages</a>
+    <a href="#s6" class="toc-item"><span class="toc-num">06</span> Limitations</a>
+    <a href="#s7" class="toc-item"><span class="toc-num">07</span> Real-World Applications</a>
+    <a href="#s8" class="toc-item"><span class="toc-num">08</span> Tech Stack</a>
+    <a href="#s9" class="toc-item"><span class="toc-num">09</span> Future Directions</a>
+  </div>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="content">
+
+  <!-- 01 OVERVIEW -->
+  <section class="section" id="s1">
+    <div class="section-header">
+      <span class="section-num">01</span>
+      <h2>Overview</h2>
+    </div>
+    <p>
+      Retrieval-Augmented Generation (RAG) is a hybrid AI architecture that augments the inference process of large language models (LLMs) by dynamically retrieving relevant external knowledge at query time, rather than relying solely on parametric knowledge encoded during pretraining. First formally described by Lewis et al. (2020, Meta AI Research), RAG has since evolved into the dominant paradigm for grounded, factual, and enterprise-grade generative AI systems.
+    </p>
+    <p>
+      At its core, a RAG system decouples knowledge storage from model parameters. The LLM functions as a reasoning and generation engine, while a separate, updatable knowledge store — typically a vector database — serves as the memory substrate. This design enables factual grounding without the cost of continuous fine-tuning, offering a practical and scalable approach to deploying AI over dynamic, proprietary, or domain-specific corpora.
+    </p>
+
+    <div class="callout">
+      <p>"RAG effectively transforms a stateless language model into a knowledge-augmented agent: one that can access, retrieve, and reason over external information in real time — with full traceability of sources."</p>
+    </div>
+
+    <p>
+      The architecture is particularly well-suited to environments where knowledge freshness, domain specificity, and hallucination control are non-negotiable requirements — including enterprise search, legal AI, medical informatics, and customer intelligence platforms.
+    </p>
+  </section>
+
+  <!-- 02 CORE ARCHITECTURE -->
+  <section class="section" id="s2">
+    <div class="section-header">
+      <span class="section-num">02</span>
+      <h2>Core Architecture</h2>
+    </div>
+    <p>
+      A production RAG system consists of six primary components, each serving a well-defined functional role within the retrieval-generation pipeline. The architecture is modular by design, enabling component-level optimization, substitution, and scaling.
+    </p>
+
+    <div class="component-grid">
+
+      <div class="component-card">
+        <div class="component-card-icon">
+          <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </div>
+        <h3>User Query Interface</h3>
+        <p>The entry point of the system. Accepts natural language input, optionally applies query pre-processing (expansion, normalization, or intent classification) before forwarding to the embedding layer.</p>
+      </div>
+
+      <div class="component-card">
+        <div class="component-card-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+        </div>
+        <h3>Embedding Model</h3>
+        <p>Converts both queries and documents into dense vector representations in a shared semantic space. Common choices include <code>text-embedding-3-large</code>, <code>bge-m3</code>, <code>e5-mistral</code>, or domain-fine-tuned bi-encoders.</p>
+      </div>
+
+      <div class="component-card">
+        <div class="component-card-icon">
+          <svg viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+        </div>
+        <h3>Vector Database</h3>
+        <p>Persists document embeddings with associated metadata. Supports approximate nearest-neighbor (ANN) search via HNSW, IVF, or PQ indexing strategies. Examples: Pinecone, Weaviate, Qdrant, Milvus, pgvector.</p>
+      </div>
+
+      <div class="component-card">
+        <div class="component-card-icon">
+          <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        </div>
+        <h3>Retriever</h3>
+        <p>Executes similarity search (cosine, dot-product, or L2) against the vector index. Advanced systems layer in BM25 sparse retrieval (hybrid search) and cross-encoder rerankers to improve top-k precision before context assembly.</p>
+      </div>
+
+      <div class="component-card">
+        <div class="component-card-icon">
+          <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+        </div>
+        <h3>Large Language Model</h3>
+        <p>The generative backbone. Receives a structured prompt comprising the original query and retrieved context chunks. Responsible for reasoning, synthesis, and response generation. May be proprietary (GPT-4o, Claude 3.5) or open-weight (Llama 3, Mistral).</p>
+      </div>
+
+      <div class="component-card">
+        <div class="component-card-icon">
+          <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        </div>
+        <h3>Response Generator</h3>
+        <p>Manages output formatting, citation attribution, streaming, and optionally applies post-generation verification layers (e.g., faithfulness scoring, guardrail filters) before returning the final response to the client.</p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- 03 WORKFLOW -->
+  <section class="section" id="s3">
+    <div class="section-header">
+      <span class="section-num">03</span>
+      <h2>End-to-End Workflow</h2>
+    </div>
+    <p>
+      The RAG inference pipeline operates as a sequential, low-latency chain from query ingestion to response delivery. Each step is independently optimizable and may be parallelized where architectural constraints permit.
+    </p>
+
+    <div class="pipeline">
+      <div class="pipeline-step">
+        <div class="pipeline-step-num">01</div>
+        <div class="pipeline-step-body">
+          <h4>Query Ingestion &amp; Pre-processing</h4>
+          <p>The raw user query is received via API or chat interface. Optional pre-processing steps include query expansion (HyDE, multi-query generation), entity extraction, and intent routing to appropriate knowledge sub-stores.</p>
+        </div>
+      </div>
+      <div class="pipeline-step">
+        <div class="pipeline-step-num">02</div>
+        <div class="pipeline-step-body">
+          <h4>Query Embedding</h4>
+          <p>The query string is passed through the embedding model to produce a high-dimensional dense vector (e.g., 1536-d for <code>text-embedding-3-large</code>). The vector encodes semantic meaning rather than lexical form, enabling conceptual similarity matching.</p>
+        </div>
+      </div>
+      <div class="pipeline-step">
+        <div class="pipeline-step-num">03</div>
+        <div class="pipeline-step-body">
+          <h4>Approximate Nearest-Neighbor Search</h4>
+          <p>The query vector is compared against all indexed document chunk vectors using ANN algorithms. Top-k candidates (typically k=5–20) are returned ranked by cosine similarity. Hybrid search systems additionally score BM25 results and merge via Reciprocal Rank Fusion (RRF).</p>
+        </div>
+      </div>
+      <div class="pipeline-step">
+        <div class="pipeline-step-num">04</div>
+        <div class="pipeline-step-body">
+          <h4>Reranking &amp; Context Assembly</h4>
+          <p>Retrieved chunks are passed through a cross-encoder reranker (e.g., <code>bge-reranker-v2-m3</code>, Cohere Rerank) for precision scoring. Top chunks are assembled into a structured prompt with source metadata, respecting the LLM's context window budget (typically 8k–128k tokens).</p>
+        </div>
+      </div>
+      <div class="pipeline-step">
+        <div class="pipeline-step-num">05</div>
+        <div class="pipeline-step-body">
+          <h4>Grounded Generation</h4>
+          <p>The LLM receives a system prompt defining citation behavior and scope constraints, the assembled context, and the original query. It synthesizes a factually grounded response, constrained to retrieved evidence. Output is streamed to the client with optional inline citations.</p>
+        </div>
+      </div>
+      <div class="pipeline-step">
+        <div class="pipeline-step-num">06</div>
+        <div class="pipeline-step-body">
+          <h4>Post-Generation Verification (Optional)</h4>
+          <p>Faithfulness verification layers (e.g., RAGAS, TruLens) may score response grounding against retrieved chunks, flagging or filtering responses with low attribution overlap. Outputs are logged for pipeline observability and offline evaluation.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 04 TYPES -->
+  <section class="section" id="s4">
+    <div class="section-header">
+      <span class="section-num">04</span>
+      <h2>Types of RAG Systems</h2>
+    </div>
+    <p>
+      The RAG landscape has evolved from simple retrieve-then-generate pipelines into a spectrum of architectures with varying levels of sophistication, controllability, and reasoning capability.
+    </p>
+
+    <div class="rag-types">
+      <div class="rag-type-card">
+        <span class="rag-type-badge badge-naive">Naive RAG</span>
+        <h3>Naive RAG</h3>
+        <p>The baseline architecture: embed query → retrieve top-k chunks → concatenate with prompt → generate. Simple to implement but susceptible to retrieval noise, poor chunk granularity, and context overflow. Suitable for prototyping or low-complexity corpora.</p>
+      </div>
+      <div class="rag-type-card">
+        <span class="rag-type-badge badge-advanced">Advanced RAG</span>
+        <h3>Advanced RAG</h3>
+        <p>Introduces pre-retrieval enhancements (query rewriting, HyDE, multi-query expansion) and post-retrieval optimization (cross-encoder reranking, redundancy filtering, context compression). Significantly improves precision and recall over naive baselines.</p>
+      </div>
+      <div class="rag-type-card">
+        <span class="rag-type-badge badge-modular">Modular RAG</span>
+        <h3>Modular RAG</h3>
+        <p>Decomposes the pipeline into independently configurable modules (routers, retrievers, fusion layers, generators). Enables plug-and-play component substitution, hybrid retrieval strategies, and domain-specific pipeline configurations without full system redesign.</p>
+      </div>
+      <div class="rag-type-card">
+        <span class="rag-type-badge badge-agentic">Agentic RAG</span>
+        <h3>Agentic RAG</h3>
+        <p>Embeds retrieval within an LLM agent loop. The model dynamically decides when and what to retrieve, issues multiple iterative retrieval calls, and may use tool-use APIs to query structured databases, REST APIs, or code interpreters alongside vector stores. Enables multi-hop reasoning over complex queries.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 05 ADVANTAGES -->
+  <section class="section" id="s5">
+    <div class="section-header">
+      <span class="section-num">05</span>
+      <h2>Key Advantages</h2>
+    </div>
+    <p>RAG addresses fundamental limitations of purely parametric LLMs and provides measurable engineering and business advantages in production deployments.</p>
+
+    <div class="two-col">
+      <div class="adv-item">
+        <div class="adv-dot"></div>
+        <div>
+          <h4>Hallucination Reduction</h4>
+          <p>By constraining generation to retrieved evidence, RAG significantly reduces confabulation. The LLM reasons over explicit context rather than interpolating from compressed parametric weights, improving factual fidelity on domain-specific queries.</p>
+        </div>
+      </div>
+      <div class="adv-item">
+        <div class="adv-dot"></div>
+        <div>
+          <h4>Real-Time &amp; Private Data Access</h4>
+          <p>Unlike fine-tuned models, RAG systems can be updated by modifying the knowledge base without retraining. This enables low-latency access to live data sources, proprietary enterprise corpora, and post-cutoff information.</p>
+        </div>
+      </div>
+      <div class="adv-item">
+        <div class="adv-dot"></div>
+        <div>
+          <h4>Improved Factual Grounding</h4>
+          <p>Responses are attributable to specific source documents, enabling citation generation, audit trails, and human verification. This is critical in regulated domains (legal, medical, financial) where source traceability is a compliance requirement.</p>
+        </div>
+      </div>
+      <div class="adv-item">
+        <div class="adv-dot"></div>
+        <div>
+          <h4>Enterprise Knowledge Scalability</h4>
+          <p>Vector databases scale horizontally to billions of document chunks. Metadata filtering enables scoped retrieval across large, heterogeneous knowledge repositories — supporting role-based access control (RBAC) and multi-tenant architectures.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 06 LIMITATIONS -->
+  <section class="section" id="s6">
+    <div class="section-header">
+      <span class="section-num">06</span>
+      <h2>Limitations &amp; Engineering Challenges</h2>
+    </div>
+    <p>RAG introduces non-trivial engineering complexity. A clear understanding of its failure modes is essential for building robust production systems.</p>
+
+    <div class="two-col">
+      <div class="lim-item">
+        <div class="lim-dot"></div>
+        <div>
+          <h4>Retrieval Quality Dependency</h4>
+          <p>Generation quality is upper-bounded by retrieval quality. Embedding model mismatch, poor corpus coverage, or inadequate chunking strategies produce irrelevant or incomplete context — directly degrading response accuracy regardless of LLM capability.</p>
+        </div>
+      </div>
+      <div class="lim-item">
+        <div class="lim-dot"></div>
+        <div>
+          <h4>Inference Latency</h4>
+          <p>RAG introduces additional round-trips: embedding generation, ANN search, optional reranking, and LLM generation. End-to-end latency (P50: 1.5–4s; P99: 5–10s) can exceed acceptable thresholds for real-time applications without aggressive caching and parallelization.</p>
+        </div>
+      </div>
+      <div class="lim-item">
+        <div class="lim-dot"></div>
+        <div>
+          <h4>Chunking &amp; Indexing Complexity</h4>
+          <p>Optimal chunk size, overlap, and segmentation strategy are corpus-dependent. Fixed-size chunking breaks semantic continuity; semantic chunking requires additional tooling. Document hierarchy (tables, figures, nested structures) is frequently lost during naive ingestion pipelines.</p>
+        </div>
+      </div>
+      <div class="lim-item">
+        <div class="lim-dot"></div>
+        <div>
+          <h4>Context Window Constraints</h4>
+          <p>Even with large context LLMs (128k–1M tokens), stuffing excessive retrieved content dilutes signal and increases generation cost. "Lost in the middle" degradation — where LLMs under-attend to information in the center of long contexts — remains an active research problem.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 07 APPLICATIONS -->
+  <section class="section" id="s7">
+    <div class="section-header">
+      <span class="section-num">07</span>
+      <h2>Real-World Applications</h2>
+    </div>
+    <p>RAG architectures are deployed across a wide range of high-value enterprise and consumer applications where factual precision, knowledge currency, and domain specificity are critical.</p>
+
+    <div class="app-list">
+      <div class="app-row">
+        <div class="app-domain">Enterprise Knowledge Assistant</div>
+        <div class="app-desc">Internal Q&amp;A systems over corporate wikis, HR policy documents, technical runbooks, and internal APIs. RAG enables employees to query heterogeneous internal knowledge with natural language, respecting access control boundaries.</div>
+      </div>
+      <div class="app-row">
+        <div class="app-domain">Customer Support Automation</div>
+        <div class="app-desc">AI agents grounded in product documentation, support ticket history, and policy corpora. Reduces escalation rates by generating accurate, source-referenced responses to product and billing queries at scale.</div>
+      </div>
+      <div class="app-row">
+        <div class="app-domain">Legal Document Intelligence</div>
+        <div class="app-desc">Contract analysis, case law search, and due diligence automation. RAG retrieves relevant statutes, precedents, and clauses from large document repositories, enabling attorneys to query thousands of documents with precise attribution.</div>
+      </div>
+      <div class="app-row">
+        <div class="app-domain">Medical AI Assistants</div>
+        <div class="app-desc">Clinical decision support systems grounded in EHR data, medical literature (PubMed), drug databases (RxNorm), and clinical guidelines. RAG provides evidence-based recommendations while surfacing source citations for physician verification.</div>
+      </div>
+      <div class="app-row">
+        <div class="app-domain">E-Commerce Recommendation</div>
+        <div class="app-desc">Semantic product search and comparison engines that retrieve product specifications, reviews, and compatibility data from structured and unstructured catalogs, enabling nuanced natural-language queries beyond keyword matching.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 08 TECH STACK -->
+  <section class="section" id="s8">
+    <div class="section-header">
+      <span class="section-num">08</span>
+      <h2>Representative Tech Stack</h2>
+    </div>
+    <p>Production RAG systems are assembled from a composable ecosystem of vector databases, orchestration frameworks, embedding models, and LLM providers. Selection is driven by scale, latency requirements, and deployment environment.</p>
+
+    <div class="stack-section">
+      <div>
+        <div class="stack-group-label">Vector Databases</div>
+        <div class="stack-chips">
+          <span class="chip accent">Pinecone</span>
+          <span class="chip accent">Weaviate</span>
+          <span class="chip accent">Qdrant</span>
+          <span class="chip accent">Milvus</span>
+          <span class="chip">FAISS (Meta)</span>
+          <span class="chip">pgvector (PostgreSQL)</span>
+          <span class="chip">ChromaDB</span>
+          <span class="chip">Redis VSS</span>
+        </div>
+      </div>
+      <div>
+        <div class="stack-group-label">Orchestration Frameworks</div>
+        <div class="stack-chips">
+          <span class="chip accent">LangChain</span>
+          <span class="chip accent">LlamaIndex</span>
+          <span class="chip accent">Haystack (deepset)</span>
+          <span class="chip">DSPy (Stanford NLP)</span>
+          <span class="chip">Semantic Kernel (Microsoft)</span>
+          <span class="chip">Ragas (Evaluation)</span>
+        </div>
+      </div>
+      <div>
+        <div class="stack-group-label">Embedding Models</div>
+        <div class="stack-chips">
+          <span class="chip">text-embedding-3-large (OpenAI)</span>
+          <span class="chip">bge-m3 (BAAI)</span>
+          <span class="chip">e5-mistral-7b (Microsoft)</span>
+          <span class="chip">embed-v3 (Cohere)</span>
+          <span class="chip">voyage-3 (Voyage AI)</span>
+        </div>
+      </div>
+      <div>
+        <div class="stack-group-label">Large Language Models</div>
+        <div class="stack-chips">
+          <span class="chip">Claude 3.5 Sonnet (Anthropic)</span>
+          <span class="chip">GPT-4o (OpenAI)</span>
+          <span class="chip">Gemini 1.5 Pro (Google)</span>
+          <span class="chip">Llama 3.1 (Meta — open weight)</span>
+          <span class="chip">Mistral Large (Mistral AI)</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 09 FUTURE -->
+  <section class="section" id="s9">
+    <div class="section-header">
+      <span class="section-num">09</span>
+      <h2>Future Directions</h2>
+    </div>
+    <p>
+      RAG is rapidly evolving beyond static retrieval pipelines toward dynamic, self-improving, and multimodal architectures. Several research and engineering frontiers are reshaping how knowledge is accessed and integrated in AI systems.
+    </p>
+
+    <div class="future-grid">
+      <div class="future-card">
+        <div class="future-tag">Emerging</div>
+        <h3>Agentic Retrieval</h3>
+        <p>LLMs autonomously orchestrate multi-step retrieval plans — issuing iterative queries, decomposing sub-questions, and synthesizing evidence across heterogeneous sources using tool-use APIs and code execution.</p>
+      </div>
+      <div class="future-card">
+        <div class="future-tag">Active Research</div>
+        <h3>Multimodal RAG</h3>
+        <p>Extending retrieval beyond text to images, audio, video, and structured tables. Vision-language embedding models (e.g., CLIP, ColPali) enable unified semantic search across mixed-modality corpora.</p>
+      </div>
+      <div class="future-card">
+        <div class="future-tag">Frontier</div>
+        <h3>Self-Improving Pipelines</h3>
+        <p>Systems that autonomously identify retrieval failures, refine chunking strategies, and optimize retriever-reranker configurations using feedback signals from generation quality metrics and user behavior.</p>
+      </div>
+      <div class="future-card">
+        <div class="future-tag">Infrastructure</div>
+        <h3>Graph-Augmented RAG</h3>
+        <p>Knowledge graphs layer relational structure atop vector retrieval, enabling multi-hop reasoning over entity relationships — combining the precision of symbolic retrieval with the fluency of neural generation.</p>
+      </div>
+      <div class="future-card">
+        <div class="future-tag">Optimization</div>
+        <h3>Learned Retrieval</h3>
+        <p>End-to-end differentiable RAG systems where retriever and generator are jointly trained, enabling the model to learn what to retrieve optimally for its generative objectives — moving beyond fixed embedding spaces.</p>
+      </div>
+      <div class="future-card">
+        <div class="future-tag">Enterprise</div>
+        <h3>Federated RAG</h3>
+        <p>Distributed retrieval architectures that query isolated knowledge partitions without centralizing sensitive data — enabling RAG deployment in privacy-critical, multi-tenant, and cross-jurisdictional environments.</p>
+      </div>
+    </div>
+
+    <div class="callout" style="margin-top: 36px;">
+      <p>RAG represents not merely a retrieval enhancement, but a fundamental architectural shift: from AI as a static knowledge store to AI as a dynamic reasoning agent over living, evolving information systems. As context windows expand and retrieval infrastructure matures, the boundary between retrieval and reasoning will continue to dissolve.</p>
+    </div>
+  </section>
+
+</div>
+
+<!-- FOOTER -->
+<div class="doc-footer">
+  <p>Retrieval-Augmented Generation (RAG) Systems · Technical Reference</p>
+  <p>For engineers, researchers &amp; AI product builders</p>
+</div>
+
+</body>
+</html>
