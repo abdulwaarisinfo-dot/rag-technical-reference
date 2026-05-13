@@ -83,6 +83,14 @@
     color: rgba(255,255,255,0.55);
   }
 
+  .cover-sub {
+    color: rgba(255,255,255,0.55);
+    font-size: 15px;
+    max-width: 560px;
+    margin-top: 16px;
+    line-height: 1.65;
+  }
+
   .cover-meta {
     display: flex;
     gap: 32px;
@@ -174,6 +182,31 @@
 
   p { font-size: 15.5px; color: var(--ink-2); margin-bottom: 14px; }
 
+  /* ── SIMPLE EXPLAINER BOX ── */
+  .simple-box {
+    margin: 20px 0 24px;
+    padding: 20px 24px;
+    background: var(--surface);
+    border: 0.5px solid var(--rule);
+    border-radius: 10px;
+  }
+
+  .simple-box-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    color: var(--ink-4);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  .simple-box p {
+    font-size: 15px;
+    color: var(--ink-2);
+    margin: 0;
+    line-height: 1.65;
+  }
+
   /* ── COMPONENT CARDS ── */
   .component-grid {
     display: grid;
@@ -206,8 +239,16 @@
     font-size: 13.5px;
     font-weight: 600;
     color: var(--ink);
-    margin-bottom: 6px;
+    margin-bottom: 4px;
     font-family: var(--sans);
+  }
+
+  .component-card .simple-role {
+    font-size: 12px;
+    color: var(--accent-mid);
+    font-family: var(--mono);
+    margin-bottom: 8px;
+    display: block;
   }
 
   .component-card p {
@@ -258,7 +299,15 @@
     font-size: 13.5px;
     font-weight: 600;
     color: var(--ink);
-    margin-bottom: 3px;
+    margin-bottom: 2px;
+  }
+
+  .pipeline-step-body .plain-english {
+    font-size: 12px;
+    color: var(--accent-mid);
+    font-family: var(--mono);
+    margin-bottom: 5px;
+    display: block;
   }
 
   .pipeline-step-body p {
@@ -301,7 +350,15 @@
     font-size: 14.5px;
     font-weight: 600;
     color: var(--ink);
-    margin-bottom: 7px;
+    margin-bottom: 4px;
+  }
+
+  .rag-type-card .simple-role {
+    font-size: 12px;
+    color: var(--ink-3);
+    font-family: var(--mono);
+    margin-bottom: 8px;
+    display: block;
   }
 
   .rag-type-card p {
@@ -353,7 +410,19 @@
 
   .adv-item h4, .lim-item h4 {
     font-size: 13.5px; font-weight: 600;
-    color: var(--ink); margin-bottom: 4px;
+    color: var(--ink); margin-bottom: 2px;
+  }
+
+  .adv-item .simple-role, .lim-item .simple-role {
+    font-size: 11.5px;
+    color: var(--green);
+    font-family: var(--mono);
+    margin-bottom: 4px;
+    display: block;
+  }
+
+  .lim-item .simple-role {
+    color: var(--amber);
   }
 
   .adv-item p, .lim-item p {
@@ -393,7 +462,15 @@
     font-size: 13.5px;
     color: var(--ink-3);
     display: flex;
-    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    gap: 4px;
+  }
+
+  .app-simple {
+    font-size: 12px;
+    font-family: var(--mono);
+    color: var(--accent-mid);
   }
 
   /* ── TECH STACK ── */
@@ -459,7 +536,15 @@
     font-size: 14px;
     font-weight: 600;
     color: var(--ink);
+    margin-bottom: 4px;
+  }
+
+  .future-card .simple-role {
+    font-size: 12px;
+    color: var(--ink-4);
+    font-family: var(--mono);
     margin-bottom: 8px;
+    display: block;
   }
 
   .future-card p { font-size: 13px; color: var(--ink-3); margin: 0; line-height: 1.55; }
@@ -516,8 +601,8 @@
 <div class="cover">
   <div class="cover-label">Technical Reference Document · AI Systems Engineering</div>
   <h1>Retrieval-Augmented Generation <em>(RAG)</em> Systems<br>Architecture, Workflow &amp; Applications</h1>
-  <p style="color:rgba(255,255,255,0.55); font-size:15px; max-width:560px; margin-top:16px; line-height:1.65;">
-    A structured, in-depth reference for engineers, researchers, and AI product builders working with hybrid retrieval-generative architectures.
+  <p class="cover-sub">
+    A structured, in-depth reference for engineers, researchers, and AI product builders working with hybrid retrieval-generative architectures — explained clearly from first principles.
   </p>
   <div class="cover-meta">
     <div class="cover-meta-item"><strong>Audience</strong>AI Engineers &amp; Researchers</div>
@@ -552,19 +637,25 @@
       <span class="section-num">01</span>
       <h2>Overview</h2>
     </div>
-    <p>
-      Retrieval-Augmented Generation (RAG) is a hybrid AI architecture that augments the inference process of large language models (LLMs) by dynamically retrieving relevant external knowledge at query time, rather than relying solely on parametric knowledge encoded during pretraining. First formally described by Lewis et al. (2020, Meta AI Research), RAG has since evolved into the dominant paradigm for grounded, factual, and enterprise-grade generative AI systems.
-    </p>
-    <p>
-      At its core, a RAG system decouples knowledge storage from model parameters. The LLM functions as a reasoning and generation engine, while a separate, updatable knowledge store — typically a vector database — serves as the memory substrate. This design enables factual grounding without the cost of continuous fine-tuning, offering a practical and scalable approach to deploying AI over dynamic, proprietary, or domain-specific corpora.
-    </p>
 
-    <div class="callout">
-      <p>"RAG effectively transforms a stateless language model into a knowledge-augmented agent: one that can access, retrieve, and reason over external information in real time — with full traceability of sources."</p>
+    <div class="simple-box">
+      <div class="simple-box-label">The Simple Idea</div>
+      <p>Imagine an AI that, instead of answering only from what it memorized during training, can first go look things up in a library — then answer you. That is RAG. It gives the AI a live reference shelf it can check before speaking.</p>
     </div>
 
     <p>
-      The architecture is particularly well-suited to environments where knowledge freshness, domain specificity, and hallucination control are non-negotiable requirements — including enterprise search, legal AI, medical informatics, and customer intelligence platforms.
+      Retrieval-Augmented Generation (RAG) is a hybrid AI architecture that extends large language model (LLM) inference by dynamically retrieving relevant external knowledge at query time, rather than depending solely on facts baked into the model's parameters during pretraining. First formally described by Lewis et al. (2020, Meta AI Research), RAG has since become the dominant paradigm for grounded, factual, and enterprise-grade generative AI systems.
+    </p>
+    <p>
+      The central design principle is a clean separation between knowledge storage and model parameters. The LLM acts purely as a reasoning and language engine. A separate, independently updatable knowledge store — typically a vector database — serves as the external memory substrate. This decoupling means the knowledge base can be refreshed, extended, or replaced without touching the model itself. No retraining required.
+    </p>
+
+    <div class="callout">
+      <p>"RAG transforms a stateless language model into a knowledge-augmented reasoning agent: one that can retrieve, read, and reason over external information in real time — with full traceability back to source documents."</p>
+    </div>
+
+    <p>
+      This architecture is especially well-suited to environments where knowledge freshness, domain specificity, and hallucination control are non-negotiable — including enterprise search, legal AI, medical informatics, and customer intelligence platforms.
     </p>
   </section>
 
@@ -574,8 +665,14 @@
       <span class="section-num">02</span>
       <h2>Core Architecture</h2>
     </div>
+
+    <div class="simple-box">
+      <div class="simple-box-label">The Simple Idea</div>
+      <p>Think of it like a team of specialists. One person listens to your question. Another translates it into a format that can search a filing cabinet. A third searches and pulls out the right files. A fourth hands those files to a brilliant writer, who reads them and answers you clearly. Each person has one job. RAG works the same way — six components, each with a single clear role.</p>
+    </div>
+
     <p>
-      A production RAG system consists of six primary components, each serving a well-defined functional role within the retrieval-generation pipeline. The architecture is modular by design, enabling component-level optimization, substitution, and scaling.
+      A production RAG system is composed of six primary components, each fulfilling a well-defined functional role. The architecture is intentionally modular, allowing individual components to be optimized, swapped, or scaled independently without redesigning the full system.
     </p>
 
     <div class="component-grid">
@@ -585,7 +682,8 @@
           <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
         </div>
         <h3>User Query Interface</h3>
-        <p>The entry point of the system. Accepts natural language input, optionally applies query pre-processing (expansion, normalization, or intent classification) before forwarding to the embedding layer.</p>
+        <span class="simple-role">The front door — where you ask your question</span>
+        <p>Accepts natural language input and optionally applies pre-processing — query expansion, normalization, or intent classification — before passing the request downstream to the embedding layer.</p>
       </div>
 
       <div class="component-card">
@@ -593,7 +691,8 @@
           <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
         </div>
         <h3>Embedding Model</h3>
-        <p>Converts both queries and documents into dense vector representations in a shared semantic space. Common choices include <code>text-embedding-3-large</code>, <code>bge-m3</code>, <code>e5-mistral</code>, or domain-fine-tuned bi-encoders.</p>
+        <span class="simple-role">The translator — turns words into numbers</span>
+        <p>Converts queries and documents alike into dense vector representations in a shared semantic space. Common choices include <code>text-embedding-3-large</code>, <code>bge-m3</code>, <code>e5-mistral</code>, or domain-fine-tuned bi-encoders.</p>
       </div>
 
       <div class="component-card">
@@ -601,7 +700,8 @@
           <svg viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
         </div>
         <h3>Vector Database</h3>
-        <p>Persists document embeddings with associated metadata. Supports approximate nearest-neighbor (ANN) search via HNSW, IVF, or PQ indexing strategies. Examples: Pinecone, Weaviate, Qdrant, Milvus, pgvector.</p>
+        <span class="simple-role">The filing cabinet — stores everything as searchable numbers</span>
+        <p>Persists document embeddings with associated metadata and supports approximate nearest-neighbor (ANN) search via HNSW, IVF, or PQ indexing. Examples: Pinecone, Weaviate, Qdrant, Milvus, pgvector.</p>
       </div>
 
       <div class="component-card">
@@ -609,7 +709,8 @@
           <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
         </div>
         <h3>Retriever</h3>
-        <p>Executes similarity search (cosine, dot-product, or L2) against the vector index. Advanced systems layer in BM25 sparse retrieval (hybrid search) and cross-encoder rerankers to improve top-k precision before context assembly.</p>
+        <span class="simple-role">The researcher — finds the most relevant documents</span>
+        <p>Executes similarity search against the vector index using cosine, dot-product, or L2 distance. Advanced systems layer in BM25 sparse retrieval (hybrid search) and cross-encoder rerankers to sharpen top-k precision before context is assembled.</p>
       </div>
 
       <div class="component-card">
@@ -617,7 +718,8 @@
           <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
         </div>
         <h3>Large Language Model</h3>
-        <p>The generative backbone. Receives a structured prompt comprising the original query and retrieved context chunks. Responsible for reasoning, synthesis, and response generation. May be proprietary (GPT-4o, Claude 3.5) or open-weight (Llama 3, Mistral).</p>
+        <span class="simple-role">The writer — reads the findings and answers you</span>
+        <p>The generative backbone. Receives a structured prompt containing the original query plus the retrieved context chunks. Responsible for reasoning, synthesis, and producing the final response. May be proprietary (GPT-4o, Claude) or open-weight (Llama 3, Mistral).</p>
       </div>
 
       <div class="component-card">
@@ -625,7 +727,8 @@
           <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
         </div>
         <h3>Response Generator</h3>
-        <p>Manages output formatting, citation attribution, streaming, and optionally applies post-generation verification layers (e.g., faithfulness scoring, guardrail filters) before returning the final response to the client.</p>
+        <span class="simple-role">The editor — formats, cites, and delivers the answer</span>
+        <p>Manages output formatting, citation attribution, and streaming. Optionally applies post-generation verification layers — faithfulness scoring and guardrail filters — before the final response reaches the client.</p>
       </div>
 
     </div>
@@ -637,8 +740,14 @@
       <span class="section-num">03</span>
       <h2>End-to-End Workflow</h2>
     </div>
+
+    <div class="simple-box">
+      <div class="simple-box-label">The Simple Idea</div>
+      <p>You ask a question. The system converts it into a search code, searches its library for matching pages, gathers the best ones, hands them to the AI with your question, and the AI writes you a clear, grounded answer — all in under a few seconds. Below is every step, in order.</p>
+    </div>
+
     <p>
-      The RAG inference pipeline operates as a sequential, low-latency chain from query ingestion to response delivery. Each step is independently optimizable and may be parallelized where architectural constraints permit.
+      The RAG inference pipeline operates as a sequential, low-latency chain from query ingestion to response delivery. Each step is independently optimizable and certain stages can be parallelized where architecture permits.
     </p>
 
     <div class="pipeline">
@@ -646,42 +755,48 @@
         <div class="pipeline-step-num">01</div>
         <div class="pipeline-step-body">
           <h4>Query Ingestion &amp; Pre-processing</h4>
-          <p>The raw user query is received via API or chat interface. Optional pre-processing steps include query expansion (HyDE, multi-query generation), entity extraction, and intent routing to appropriate knowledge sub-stores.</p>
+          <span class="plain-english">You type a question — the system gets it ready</span>
+          <p>The raw user query is received via API or chat interface. Optional pre-processing includes query expansion (HyDE, multi-query generation), entity extraction, and intent routing to the appropriate knowledge sub-store.</p>
         </div>
       </div>
       <div class="pipeline-step">
         <div class="pipeline-step-num">02</div>
         <div class="pipeline-step-body">
           <h4>Query Embedding</h4>
-          <p>The query string is passed through the embedding model to produce a high-dimensional dense vector (e.g., 1536-d for <code>text-embedding-3-large</code>). The vector encodes semantic meaning rather than lexical form, enabling conceptual similarity matching.</p>
+          <span class="plain-english">Your question is converted into a number fingerprint</span>
+          <p>The query string is passed through the embedding model to produce a high-dimensional dense vector — 1536 dimensions for <code>text-embedding-3-large</code>, for example. This vector encodes semantic meaning rather than literal words, enabling conceptual similarity matching rather than keyword matching.</p>
         </div>
       </div>
       <div class="pipeline-step">
         <div class="pipeline-step-num">03</div>
         <div class="pipeline-step-body">
           <h4>Approximate Nearest-Neighbor Search</h4>
-          <p>The query vector is compared against all indexed document chunk vectors using ANN algorithms. Top-k candidates (typically k=5–20) are returned ranked by cosine similarity. Hybrid search systems additionally score BM25 results and merge via Reciprocal Rank Fusion (RRF).</p>
+          <span class="plain-english">The system finds the documents most similar to your question</span>
+          <p>The query vector is compared against all indexed document chunk vectors using ANN algorithms. The top-k candidates (typically k = 5–20) are returned ranked by cosine similarity. Hybrid search systems also score BM25 keyword results and merge both rankings via Reciprocal Rank Fusion (RRF).</p>
         </div>
       </div>
       <div class="pipeline-step">
         <div class="pipeline-step-num">04</div>
         <div class="pipeline-step-body">
           <h4>Reranking &amp; Context Assembly</h4>
-          <p>Retrieved chunks are passed through a cross-encoder reranker (e.g., <code>bge-reranker-v2-m3</code>, Cohere Rerank) for precision scoring. Top chunks are assembled into a structured prompt with source metadata, respecting the LLM's context window budget (typically 8k–128k tokens).</p>
+          <span class="plain-english">The best results are re-sorted for precision, then organized for the AI</span>
+          <p>Retrieved chunks are scored by a cross-encoder reranker — such as <code>bge-reranker-v2-m3</code> or Cohere Rerank — for finer precision. The top chunks are then assembled into a structured prompt with source metadata, respecting the LLM's context window budget (typically 8k–128k tokens).</p>
         </div>
       </div>
       <div class="pipeline-step">
         <div class="pipeline-step-num">05</div>
         <div class="pipeline-step-body">
           <h4>Grounded Generation</h4>
-          <p>The LLM receives a system prompt defining citation behavior and scope constraints, the assembled context, and the original query. It synthesizes a factually grounded response, constrained to retrieved evidence. Output is streamed to the client with optional inline citations.</p>
+          <span class="plain-english">The AI reads the retrieved evidence and writes your answer</span>
+          <p>The LLM receives a system prompt defining citation behavior and scope constraints, the assembled context passages, and the original query. It synthesizes a factually grounded response constrained to the retrieved evidence. Output is streamed to the client with optional inline citations pointing back to source documents.</p>
         </div>
       </div>
       <div class="pipeline-step">
         <div class="pipeline-step-num">06</div>
         <div class="pipeline-step-body">
-          <h4>Post-Generation Verification (Optional)</h4>
-          <p>Faithfulness verification layers (e.g., RAGAS, TruLens) may score response grounding against retrieved chunks, flagging or filtering responses with low attribution overlap. Outputs are logged for pipeline observability and offline evaluation.</p>
+          <h4>Post-Generation Verification</h4>
+          <span class="plain-english">Optionally: a checker confirms the answer stays true to the sources</span>
+          <p>Faithfulness verification layers — such as RAGAS or TruLens — may score the response's grounding against retrieved chunks, flagging or filtering responses with low attribution overlap. All outputs are logged for pipeline observability and offline evaluation.</p>
         </div>
       </div>
     </div>
@@ -693,30 +808,40 @@
       <span class="section-num">04</span>
       <h2>Types of RAG Systems</h2>
     </div>
+
+    <div class="simple-box">
+      <div class="simple-box-label">The Simple Idea</div>
+      <p>Not all RAG systems are equal. They range from a basic look-up-and-answer setup, to smarter pipelines with better search, to fully flexible modular systems, all the way to AI that decides on its own when and what to search — like a researcher who knows exactly what questions to ask.</p>
+    </div>
+
     <p>
-      The RAG landscape has evolved from simple retrieve-then-generate pipelines into a spectrum of architectures with varying levels of sophistication, controllability, and reasoning capability.
+      The RAG landscape has evolved from simple retrieve-then-generate pipelines into a spectrum of architectures with varying levels of sophistication, controllability, and multi-step reasoning capability.
     </p>
 
     <div class="rag-types">
       <div class="rag-type-card">
         <span class="rag-type-badge badge-naive">Naive RAG</span>
         <h3>Naive RAG</h3>
-        <p>The baseline architecture: embed query → retrieve top-k chunks → concatenate with prompt → generate. Simple to implement but susceptible to retrieval noise, poor chunk granularity, and context overflow. Suitable for prototyping or low-complexity corpora.</p>
+        <span class="simple-role">Search → paste → generate. The basics.</span>
+        <p>The baseline: embed query, retrieve top-k chunks, concatenate with prompt, generate. Simple to build but susceptible to retrieval noise, poor chunk granularity, and context overflow. Best suited for prototyping or low-complexity corpora where speed of implementation matters more than precision.</p>
       </div>
       <div class="rag-type-card">
         <span class="rag-type-badge badge-advanced">Advanced RAG</span>
         <h3>Advanced RAG</h3>
-        <p>Introduces pre-retrieval enhancements (query rewriting, HyDE, multi-query expansion) and post-retrieval optimization (cross-encoder reranking, redundancy filtering, context compression). Significantly improves precision and recall over naive baselines.</p>
+        <span class="simple-role">Smarter searching, smarter filtering.</span>
+        <p>Introduces pre-retrieval enhancements — query rewriting, hypothetical document embeddings (HyDE), multi-query expansion — and post-retrieval optimization via cross-encoder reranking, redundancy filtering, and context compression. Significantly improves precision and recall over naive baselines.</p>
       </div>
       <div class="rag-type-card">
         <span class="rag-type-badge badge-modular">Modular RAG</span>
         <h3>Modular RAG</h3>
-        <p>Decomposes the pipeline into independently configurable modules (routers, retrievers, fusion layers, generators). Enables plug-and-play component substitution, hybrid retrieval strategies, and domain-specific pipeline configurations without full system redesign.</p>
+        <span class="simple-role">Plug-and-play components. Built to be customized.</span>
+        <p>Decomposes the pipeline into independently configurable modules — routers, retrievers, fusion layers, generators. Enables plug-and-play component substitution, hybrid retrieval strategies, and domain-specific configurations without a full system redesign. Ideal for complex enterprise deployments.</p>
       </div>
       <div class="rag-type-card">
         <span class="rag-type-badge badge-agentic">Agentic RAG</span>
         <h3>Agentic RAG</h3>
-        <p>Embeds retrieval within an LLM agent loop. The model dynamically decides when and what to retrieve, issues multiple iterative retrieval calls, and may use tool-use APIs to query structured databases, REST APIs, or code interpreters alongside vector stores. Enables multi-hop reasoning over complex queries.</p>
+        <span class="simple-role">The AI decides when and what to search — on its own.</span>
+        <p>Embeds retrieval inside an LLM agent loop. The model autonomously decides when to retrieve, issues multiple iterative search calls, decomposes complex queries into sub-questions, and can query structured databases, REST APIs, or code interpreters alongside vector stores. Enables true multi-hop reasoning over interconnected knowledge.</p>
       </div>
     </div>
   </section>
@@ -727,35 +852,45 @@
       <span class="section-num">05</span>
       <h2>Key Advantages</h2>
     </div>
-    <p>RAG addresses fundamental limitations of purely parametric LLMs and provides measurable engineering and business advantages in production deployments.</p>
+
+    <div class="simple-box">
+      <div class="simple-box-label">The Simple Idea</div>
+      <p>RAG solves the biggest problems with plain AI: it stops the AI from making things up, lets it answer questions about things that happened after it was trained, shows you exactly where the answer came from, and scales to handle enormous libraries of documents without retraining.</p>
+    </div>
+
+    <p>RAG directly addresses fundamental limitations of purely parametric LLMs and provides measurable engineering and business advantages in production deployments.</p>
 
     <div class="two-col">
       <div class="adv-item">
         <div class="adv-dot"></div>
         <div>
           <h4>Hallucination Reduction</h4>
-          <p>By constraining generation to retrieved evidence, RAG significantly reduces confabulation. The LLM reasons over explicit context rather than interpolating from compressed parametric weights, improving factual fidelity on domain-specific queries.</p>
+          <span class="simple-role">The AI only says what the documents actually say.</span>
+          <p>By constraining generation to retrieved evidence, RAG significantly reduces confabulation. The LLM reasons over explicit retrieved context rather than interpolating compressed parametric weights, improving factual fidelity on domain-specific queries where training data may be sparse or absent.</p>
         </div>
       </div>
       <div class="adv-item">
         <div class="adv-dot"></div>
         <div>
           <h4>Real-Time &amp; Private Data Access</h4>
-          <p>Unlike fine-tuned models, RAG systems can be updated by modifying the knowledge base without retraining. This enables low-latency access to live data sources, proprietary enterprise corpora, and post-cutoff information.</p>
+          <span class="simple-role">Add new knowledge without retraining the model.</span>
+          <p>Unlike fine-tuned models, RAG systems can be updated simply by modifying the knowledge base. This enables low-latency access to live data, proprietary enterprise corpora, and information created after the model's training cutoff — with no expensive retraining cycle required.</p>
         </div>
       </div>
       <div class="adv-item">
         <div class="adv-dot"></div>
         <div>
-          <h4>Improved Factual Grounding</h4>
-          <p>Responses are attributable to specific source documents, enabling citation generation, audit trails, and human verification. This is critical in regulated domains (legal, medical, financial) where source traceability is a compliance requirement.</p>
+          <h4>Traceable, Citable Responses</h4>
+          <span class="simple-role">Every answer comes with receipts — you can verify the source.</span>
+          <p>Responses are attributable to specific source documents, enabling citation generation, audit trails, and human verification. In regulated domains — legal, medical, financial — source traceability is often a hard compliance requirement, not just a nice-to-have.</p>
         </div>
       </div>
       <div class="adv-item">
         <div class="adv-dot"></div>
         <div>
           <h4>Enterprise Knowledge Scalability</h4>
-          <p>Vector databases scale horizontally to billions of document chunks. Metadata filtering enables scoped retrieval across large, heterogeneous knowledge repositories — supporting role-based access control (RBAC) and multi-tenant architectures.</p>
+          <span class="simple-role">Works across billions of documents, with access control built in.</span>
+          <p>Vector databases scale horizontally to billions of document chunks. Metadata filtering enables scoped retrieval across large, heterogeneous repositories — supporting role-based access control (RBAC) and multi-tenant architectures where different users should only see certain documents.</p>
         </div>
       </div>
     </div>
@@ -767,35 +902,45 @@
       <span class="section-num">06</span>
       <h2>Limitations &amp; Engineering Challenges</h2>
     </div>
-    <p>RAG introduces non-trivial engineering complexity. A clear understanding of its failure modes is essential for building robust production systems.</p>
+
+    <div class="simple-box">
+      <div class="simple-box-label">The Simple Idea</div>
+      <p>If you hand the AI bad or incomplete pages from the library, it will write a bad answer. And looking up documents takes time, which can feel slow. RAG introduces real engineering tradeoffs that every team must plan for.</p>
+    </div>
+
+    <p>RAG introduces non-trivial engineering complexity. A clear understanding of its failure modes is essential for building robust, production-grade systems.</p>
 
     <div class="two-col">
       <div class="lim-item">
         <div class="lim-dot"></div>
         <div>
           <h4>Retrieval Quality Dependency</h4>
-          <p>Generation quality is upper-bounded by retrieval quality. Embedding model mismatch, poor corpus coverage, or inadequate chunking strategies produce irrelevant or incomplete context — directly degrading response accuracy regardless of LLM capability.</p>
+          <span class="simple-role">Bad retrieval means a bad answer — no matter how smart the AI is.</span>
+          <p>Generation quality is hard-capped by retrieval quality. Embedding model mismatch, sparse corpus coverage, or inadequate chunking strategies all produce irrelevant or incomplete context — directly degrading response accuracy regardless of the LLM's inherent capability.</p>
         </div>
       </div>
       <div class="lim-item">
         <div class="lim-dot"></div>
         <div>
           <h4>Inference Latency</h4>
-          <p>RAG introduces additional round-trips: embedding generation, ANN search, optional reranking, and LLM generation. End-to-end latency (P50: 1.5–4s; P99: 5–10s) can exceed acceptable thresholds for real-time applications without aggressive caching and parallelization.</p>
+          <span class="simple-role">More steps in the pipeline means more time before you get an answer.</span>
+          <p>RAG adds round-trips: embedding generation, ANN search, optional reranking, and LLM generation all stack up. End-to-end latency typically falls in the P50: 1.5–4s and P99: 5–10s range — and can exceed acceptable thresholds for real-time applications without careful caching and parallelization strategies.</p>
         </div>
       </div>
       <div class="lim-item">
         <div class="lim-dot"></div>
         <div>
           <h4>Chunking &amp; Indexing Complexity</h4>
-          <p>Optimal chunk size, overlap, and segmentation strategy are corpus-dependent. Fixed-size chunking breaks semantic continuity; semantic chunking requires additional tooling. Document hierarchy (tables, figures, nested structures) is frequently lost during naive ingestion pipelines.</p>
+          <span class="simple-role">How you slice up documents matters — and it is harder than it looks.</span>
+          <p>Optimal chunk size, overlap, and segmentation strategy are corpus-dependent and require careful tuning. Fixed-size chunking breaks semantic continuity; semantic chunking requires additional tooling. Document structure — tables, figures, nested hierarchies — is frequently lost or corrupted during naive ingestion pipelines.</p>
         </div>
       </div>
       <div class="lim-item">
         <div class="lim-dot"></div>
         <div>
           <h4>Context Window Constraints</h4>
-          <p>Even with large context LLMs (128k–1M tokens), stuffing excessive retrieved content dilutes signal and increases generation cost. "Lost in the middle" degradation — where LLMs under-attend to information in the center of long contexts — remains an active research problem.</p>
+          <span class="simple-role">There is only so much the AI can read at once.</span>
+          <p>Even with large-context LLMs (128k–1M tokens), flooding the prompt with excessive retrieved content dilutes signal and increases generation cost. The "lost in the middle" effect — where LLMs systematically under-attend to content positioned in the middle of long contexts — remains an active and unsolved research challenge.</p>
         </div>
       </div>
     </div>
@@ -807,28 +952,49 @@
       <span class="section-num">07</span>
       <h2>Real-World Applications</h2>
     </div>
-    <p>RAG architectures are deployed across a wide range of high-value enterprise and consumer applications where factual precision, knowledge currency, and domain specificity are critical.</p>
+
+    <div class="simple-box">
+      <div class="simple-box-label">The Simple Idea</div>
+      <p>RAG is used anywhere you need an AI to give accurate, verifiable answers from a specific, large body of documents — not generic internet knowledge. Legal teams, hospitals, companies, and customer support centers all use it today.</p>
+    </div>
+
+    <p>RAG architectures are deployed across high-value enterprise and consumer applications where factual precision, knowledge currency, and domain specificity are critical requirements — not optional features.</p>
 
     <div class="app-list">
       <div class="app-row">
         <div class="app-domain">Enterprise Knowledge Assistant</div>
-        <div class="app-desc">Internal Q&amp;A systems over corporate wikis, HR policy documents, technical runbooks, and internal APIs. RAG enables employees to query heterogeneous internal knowledge with natural language, respecting access control boundaries.</div>
+        <div class="app-desc">
+          <span class="app-simple">Ask any internal question — get answers from your own company's documents</span>
+          Internal Q&amp;A systems over corporate wikis, HR policies, technical runbooks, and internal APIs. Employees query heterogeneous internal knowledge with natural language, with access control boundaries respected at the retrieval layer.
+        </div>
       </div>
       <div class="app-row">
         <div class="app-domain">Customer Support Automation</div>
-        <div class="app-desc">AI agents grounded in product documentation, support ticket history, and policy corpora. Reduces escalation rates by generating accurate, source-referenced responses to product and billing queries at scale.</div>
+        <div class="app-desc">
+          <span class="app-simple">Support agents grounded in real product docs, not guesses</span>
+          AI agents grounded in product documentation, support ticket history, and policy corpora. Reduces escalation rates by generating accurate, source-referenced responses to product and billing queries at scale — without agents needing to memorize every policy.
+        </div>
       </div>
       <div class="app-row">
         <div class="app-domain">Legal Document Intelligence</div>
-        <div class="app-desc">Contract analysis, case law search, and due diligence automation. RAG retrieves relevant statutes, precedents, and clauses from large document repositories, enabling attorneys to query thousands of documents with precise attribution.</div>
+        <div class="app-desc">
+          <span class="app-simple">Search thousands of contracts and statutes in plain language</span>
+          Contract analysis, case law retrieval, and due diligence automation. RAG surfaces relevant statutes, precedents, and clauses from large document repositories with precise attribution — enabling attorneys to query thousands of documents in seconds rather than hours.
+        </div>
       </div>
       <div class="app-row">
         <div class="app-domain">Medical AI Assistants</div>
-        <div class="app-desc">Clinical decision support systems grounded in EHR data, medical literature (PubMed), drug databases (RxNorm), and clinical guidelines. RAG provides evidence-based recommendations while surfacing source citations for physician verification.</div>
+        <div class="app-desc">
+          <span class="app-simple">Evidence-based clinical answers with cited medical literature</span>
+          Clinical decision support grounded in EHR data, medical literature (PubMed), drug databases (RxNorm), and clinical guidelines. RAG surfaces evidence-based recommendations with citations, allowing physicians to verify the sourced evidence directly before acting on it.
+        </div>
       </div>
       <div class="app-row">
         <div class="app-domain">E-Commerce Recommendation</div>
-        <div class="app-desc">Semantic product search and comparison engines that retrieve product specifications, reviews, and compatibility data from structured and unstructured catalogs, enabling nuanced natural-language queries beyond keyword matching.</div>
+        <div class="app-desc">
+          <span class="app-simple">Find the right product by describing what you need, not just keywords</span>
+          Semantic product search engines that retrieve specifications, reviews, and compatibility data from structured and unstructured catalogs — enabling nuanced natural-language queries that go far beyond traditional keyword-match search.
+        </div>
       </div>
     </div>
   </section>
@@ -839,11 +1005,17 @@
       <span class="section-num">08</span>
       <h2>Representative Tech Stack</h2>
     </div>
-    <p>Production RAG systems are assembled from a composable ecosystem of vector databases, orchestration frameworks, embedding models, and LLM providers. Selection is driven by scale, latency requirements, and deployment environment.</p>
+
+    <div class="simple-box">
+      <div class="simple-box-label">The Simple Idea</div>
+      <p>Building RAG is like assembling a team with off-the-shelf specialists: you pick a database to store your knowledge, a framework to connect everything together, an embedding model to convert text to vectors, and a language model to do the final generation. Below are the most widely used tools in each role.</p>
+    </div>
+
+    <p>Production RAG systems are assembled from a composable ecosystem of purpose-built tools. Component selection is driven by scale requirements, latency constraints, data residency needs, and deployment environment.</p>
 
     <div class="stack-section">
       <div>
-        <div class="stack-group-label">Vector Databases</div>
+        <div class="stack-group-label">Vector Databases — store and search document embeddings</div>
         <div class="stack-chips">
           <span class="chip accent">Pinecone</span>
           <span class="chip accent">Weaviate</span>
@@ -856,7 +1028,7 @@
         </div>
       </div>
       <div>
-        <div class="stack-group-label">Orchestration Frameworks</div>
+        <div class="stack-group-label">Orchestration Frameworks — connect the pipeline components together</div>
         <div class="stack-chips">
           <span class="chip accent">LangChain</span>
           <span class="chip accent">LlamaIndex</span>
@@ -867,7 +1039,7 @@
         </div>
       </div>
       <div>
-        <div class="stack-group-label">Embedding Models</div>
+        <div class="stack-group-label">Embedding Models — convert text into semantic vector representations</div>
         <div class="stack-chips">
           <span class="chip">text-embedding-3-large (OpenAI)</span>
           <span class="chip">bge-m3 (BAAI)</span>
@@ -877,7 +1049,7 @@
         </div>
       </div>
       <div>
-        <div class="stack-group-label">Large Language Models</div>
+        <div class="stack-group-label">Large Language Models — read context and generate the final response</div>
         <div class="stack-chips">
           <span class="chip">Claude 3.5 Sonnet (Anthropic)</span>
           <span class="chip">GPT-4o (OpenAI)</span>
@@ -895,45 +1067,57 @@
       <span class="section-num">09</span>
       <h2>Future Directions</h2>
     </div>
+
+    <div class="simple-box">
+      <div class="simple-box-label">The Simple Idea</div>
+      <p>RAG is still evolving fast. The next wave is AI that searches images and videos, not just text — AI that teaches itself to search better over time — and AI that can look up private company data without ever seeing it directly. The line between "searching" and "thinking" is disappearing.</p>
+    </div>
+
     <p>
-      RAG is rapidly evolving beyond static retrieval pipelines toward dynamic, self-improving, and multimodal architectures. Several research and engineering frontiers are reshaping how knowledge is accessed and integrated in AI systems.
+      RAG is rapidly evolving beyond static retrieval pipelines toward dynamic, self-improving, and multimodal architectures. Several research and engineering frontiers are actively reshaping how knowledge is accessed, integrated, and reasoned over in AI systems.
     </p>
 
     <div class="future-grid">
       <div class="future-card">
         <div class="future-tag">Emerging</div>
         <h3>Agentic Retrieval</h3>
-        <p>LLMs autonomously orchestrate multi-step retrieval plans — issuing iterative queries, decomposing sub-questions, and synthesizing evidence across heterogeneous sources using tool-use APIs and code execution.</p>
+        <span class="simple-role">The AI plans its own research strategy</span>
+        <p>LLMs autonomously orchestrate multi-step retrieval plans — issuing iterative queries, decomposing complex questions into sub-questions, and synthesizing evidence across heterogeneous sources via tool-use APIs and code execution.</p>
       </div>
       <div class="future-card">
         <div class="future-tag">Active Research</div>
         <h3>Multimodal RAG</h3>
-        <p>Extending retrieval beyond text to images, audio, video, and structured tables. Vision-language embedding models (e.g., CLIP, ColPali) enable unified semantic search across mixed-modality corpora.</p>
+        <span class="simple-role">Search images, audio, and tables — not just text</span>
+        <p>Extends retrieval beyond text to images, audio, video, and structured tables. Vision-language embedding models such as CLIP and ColPali enable unified semantic search across mixed-modality corpora within a single retrieval pipeline.</p>
       </div>
       <div class="future-card">
         <div class="future-tag">Frontier</div>
         <h3>Self-Improving Pipelines</h3>
-        <p>Systems that autonomously identify retrieval failures, refine chunking strategies, and optimize retriever-reranker configurations using feedback signals from generation quality metrics and user behavior.</p>
+        <span class="simple-role">The system learns from its own mistakes and gets better automatically</span>
+        <p>Systems that autonomously identify retrieval failures, refine chunking strategies, and optimize retriever-reranker configurations using feedback signals from generation quality metrics and real-world user behavior.</p>
       </div>
       <div class="future-card">
         <div class="future-tag">Infrastructure</div>
         <h3>Graph-Augmented RAG</h3>
-        <p>Knowledge graphs layer relational structure atop vector retrieval, enabling multi-hop reasoning over entity relationships — combining the precision of symbolic retrieval with the fluency of neural generation.</p>
+        <span class="simple-role">Add a relationship map on top of the filing cabinet</span>
+        <p>Knowledge graphs layer relational structure atop vector retrieval, enabling multi-hop reasoning over entity relationships — combining the precision of symbolic retrieval with the fluency and flexibility of neural generation.</p>
       </div>
       <div class="future-card">
         <div class="future-tag">Optimization</div>
         <h3>Learned Retrieval</h3>
-        <p>End-to-end differentiable RAG systems where retriever and generator are jointly trained, enabling the model to learn what to retrieve optimally for its generative objectives — moving beyond fixed embedding spaces.</p>
+        <span class="simple-role">The retriever and the writer train together as one system</span>
+        <p>End-to-end differentiable RAG systems where retriever and generator are jointly trained, enabling the model to learn what to retrieve in service of its generative objectives — moving beyond fixed, static embedding spaces.</p>
       </div>
       <div class="future-card">
         <div class="future-tag">Enterprise</div>
         <h3>Federated RAG</h3>
-        <p>Distributed retrieval architectures that query isolated knowledge partitions without centralizing sensitive data — enabling RAG deployment in privacy-critical, multi-tenant, and cross-jurisdictional environments.</p>
+        <span class="simple-role">Search across isolated data silos without centralizing sensitive data</span>
+        <p>Distributed retrieval architectures that query isolated knowledge partitions without requiring data centralization — enabling RAG deployment in privacy-critical, multi-tenant, and cross-jurisdictional environments where data sovereignty is a hard constraint.</p>
       </div>
     </div>
 
     <div class="callout" style="margin-top: 36px;">
-      <p>RAG represents not merely a retrieval enhancement, but a fundamental architectural shift: from AI as a static knowledge store to AI as a dynamic reasoning agent over living, evolving information systems. As context windows expand and retrieval infrastructure matures, the boundary between retrieval and reasoning will continue to dissolve.</p>
+      <p>RAG represents not merely a retrieval enhancement, but a fundamental architectural shift — from AI as a static knowledge store to AI as a dynamic reasoning agent over living, evolving information. As context windows expand and retrieval infrastructure matures, the boundary between retrieval and reasoning will continue to dissolve.</p>
     </div>
   </section>
 
